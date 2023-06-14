@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: MyHome(),
-  ));
+  runApp(MaterialApp(debugShowCheckedModeBanner: false, home: MyHome()));
 }
 
 class MyHome extends StatefulWidget {
@@ -29,13 +26,25 @@ class MyHomeState extends State<MyHome> {
 
   _loadSavedData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
     setState(() {
       counter = (prefs.getInt(key) ?? 0);
     });
   }
 
-  _onIncrementHint() async {
+  _onDecrementHit() async {
+    // Get shared preference instance
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      // Get value
+      counter = (prefs.getInt(key) ?? 0) - 1;
+    });
+
+    // Save Value
+    prefs.setInt(key, counter);
+  }
+
+  _onIncrementHit() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     setState(() {
@@ -45,24 +54,18 @@ class MyHomeState extends State<MyHome> {
     prefs.setInt(key, counter);
   }
 
-  _onDecrementHit() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    setState(() {
-      counter = (prefs.getInt(key) ?? 0) - 1;
-    });
-
-    prefs.setInt(key, counter);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(nameOfApp),
-        ),
-        body: Container(
-            child: Center(
+      // Appbar
+      appBar: AppBar(
+        // Title
+        title: Text(nameOfApp),
+      ),
+      // Body
+      body: Container(
+        // Center the content
+        child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -72,13 +75,14 @@ class MyHomeState extends State<MyHome> {
               ),
               Padding(padding: EdgeInsets.all(10.0)),
               ElevatedButton(
-                  onPressed: _onIncrementHint,
-                  child: Text('Increment Counter')),
+                  onPressed: _onIncrementHit, child: Text('Increment Counter')),
               Padding(padding: EdgeInsets.all(10.0)),
               ElevatedButton(
                   onPressed: _onDecrementHit, child: Text('Decrement Counter')),
             ],
           ),
-        )));
+        ),
+      ),
+    );
   }
 }
